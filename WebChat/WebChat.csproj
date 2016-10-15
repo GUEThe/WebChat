@@ -57,18 +57,41 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="APP_Data\WebChat.mdf" />
+    <Content Include="APP_Data\WebChat_log.ldf">
+      <DependentUpon>WebChat.mdf</DependentUpon>
+    </Content>
+    <Content Include="css\style2.css" />
+    <Content Include="js\jquery.form.js" />
+    <Content Include="js\jquery1.8.3.min.js" />
+    <Content Include="js\jquery1.js" />
+    <Content Include="js\Particleground.js" />
+    <Content Include="Login.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ashx\login.ashx.cs">
+      <DependentUpon>login.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ashx\login.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="html\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{34c144fa-4090-4bbe-b43d-8aaac56f30f5}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
