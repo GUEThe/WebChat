@@ -48,11 +48,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL.csproj">
-      <Project>{34c144fa-4090-4bbe-b43d-8aaac56f30f5}</Project>
-      <Name>DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="C:\Users\msi\Desktop\Fleck-master\Fleck-master\src\Fleck\Fleck.csproj">
+    <ProjectReference Include="..\Fleck\Fleck.csproj">
       <Project>{8b12d929-afa9-4307-beff-2ed0f1070fee}</Project>
       <Name>Fleck</Name>
     </ProjectReference>
