@@ -1,0 +1,90 @@
+﻿body .demo-class .layui-layer-btn .layui-layer-btn0 {
+    background: #5cb85c;
+    border: 1px solid #5cb85c;
+}
+
+
+.item_emoji {
+    line-height: 32px;
+    margin-left: 5px;
+}
+
+.clearboth {
+    color: gray;
+    clear: both;
+    margin-left: 20px;
+    padding-top: 5px;
+}
+
+body {
+    font-family: 'Microsoft YaHei',Arial;
+    overflow: hidden;
+}
+
+.chatbox {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.chatarrow {
+    position: absolute;
+    top: 20px;
+    width: 0px;
+    height: 0px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    /*以下属性可以是IE5兼容*/
+    font-size: 0px;
+    line-height: 0px;
+}
+
+.chat {
+    margin-top: 5px;
+    padding: 7px;
+    word-wrap: break-word;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #cfffcf;
+    float: left;
+}
+
+.selfchat {
+    background-color: #ffe6b8;
+    float: right;
+}
+
+.chat_msg {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #f6f6f6;
+    color: #a0a0a0;
+    text-align: center;
+    margin-bottom: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+a {
+    cursor: pointer;
+}
+
+#zone_left {
+    display: none;
+    float: left;
+    width: 270px;
+    background-color: #f9fff2;
+    border-right: 1px solid #e4e4e4;
+    -moz-user-select: none;
+}
+
+#zone_right {
+    float: left;
+    margin-left: 10px;
+}
+
+.badge {
+    margin-top: 2px;
+    background-color: orange;
+}

@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>WebChat</title>
+    <meta content="WebSocket WebChat" name="description">
+    <meta content="WebSocket WebChat" name="keywords">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <!-- <link rel="stylesheet" href="./来聊吧_files/layer.css" id="layui_layer_skinlayercss">-->
+</head>
+<body>
+    <div id="zone_left" onselectstart="return false;" style="height: 900px; display: block;">
+        <div style="height:150px;margin-left:10px;">
+            <img style="float:left;" src="../images/logo.png"><div style="float:left;color:orange; font-size:30px;font-weight:900;margin-left:15px;margin-top:40px;">WebChat</div>
+            <div style="clear:both;color:#bbb;text-align:center;">遇到啥问题就问吧，不只开发</div>
+        </div>
+        <div style="height:75px;">
+            <div class="input-group">
+                <span class="input-group-addon" style="color:orange;">你的昵称</span>
+                <input readonly="readonly" type="text" class="form-control" maxlength="10">
+                <span id="btn_getnick" class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <span style="color:orange;">+</span>
+                    </button>
+                </span>
+            </div>
+            <div id="user_count" class="list-group-item list-group-item-success" style="cursor:pointer;">
+                <span id="nowusers_count" class="badge" style="background-color:green;">2</span>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-comment"></span>当前在线人数
+            </div>
+        </div>
+        <div id="user_list" class="list-group" style="overflow-y: auto; height: 675px;">
+            <a id="userid_0af861d0" class="list-group-item" onfocus="this.blur()" onclick="">
+                <span class="badge"></span>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>
+                <span class="nickname">
+                    甘苦与共的秘书<span>
+                    </span>
+                </span>
+            </a>
+            <a id="userid_0af861d0" class="list-group-item" onfocus="this.blur()" onclick="">
+                <span class="badge"></span>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>
+                <span class="nickname">何建钦<span></span></span>
+            </a>
+        </div>
+    </div>
+    <div id="zone_center" style="float: left; margin-left: 10px; margin-top: 10px;">
+        <div id="div_msgpanel" class="panel panel-success" style="width: 821px; height: 702px;">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <span id="msg_title">和[<span id="chat_with" style="color:orange">痊愈的作者</span>]的聊天记录</span>
+                    <img id="msg_clear" title="消息清空" style="cursor:pointer;width:25px;float:right;margin-right:15px;" src="../images/msgclear.png">
+                </div>
+            </div>
+            <div id="div_msgbox" class="panel-body" style="overflow-y: auto; height: 656px;">
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">天蓝的槟榔子</span>
+                        <span style="color:#d2d2d2;">09:24:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="8d1ddebe09_24_17" class="chat" style="max-width:769px;">
+                        12222<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">恳恋的蟑螂</span>
+                        <span style="color:#d2d2d2;">09:44:42</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;"></div>
+                    <div id="fdfff3f009_44_42" class="chat" style="max-width:769px;">
+                        aaaa<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">楚楚动人的蜂鸟</span>
+                        <span style="color:#d2d2d2;">10:08:59</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;"></div>
+                    <div id="0ffa97ec10_08_59" class="chat" style="max-width:769px;">？<br></div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">忆恋的银杏</span>
+                        <span style="color:#d2d2d2;">11:04:23</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;"></div>
+                    <div id="a7184bf211_04_23" class="chat" style="max-width:769px;">df<br></div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:right">
+                    <div style="text-align:right">
+                        <span style="color:#d2d2d2;">20:05:33</span>
+                        <span style="font-weight:900;color:#6d6d6d">高兴的西索</span>
+                    </div>
+                    <div class="chatarrow" style="right:5px;border-bottom: 8px solid #ffe6b8;"></div>
+                    <div id="7f721f0620_05_33" class="chat selfchat" style="max-width:504px;">
+                        ?????<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+                <div class="chatbox" style="float:left">
+                    <div style="text-align:left">
+                        <span style="font-weight:900;color:#6d6d6d">粗细的水壶</span>
+                        <span style="color:#d2d2d2;">04:04:17</span>
+                    </div>
+                    <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;">
+                    </div>
+                    <div id="3566f93904_04_17" class="chat" style="max-width:769px;">
+                        test<br>
+                    </div>
+                </div>
+                <div class="clearboth"></div>
+            </div>
+        </div>
+        <div style="position:relative;left:0px;bottom:10px;">
+            <div style="float:right;">
+                <button id="btn_say" type="button" class="btn btn-success">发送</button>
+            </div>
+        </div>
+        <div style="clear:both">
+            <form id="sendForm">
+                <textarea id="inp_say" maxlength="500" placeholder="点击左侧用户可私聊" class="form-control" style="height:125px;resize:none;"></textarea>
+            </form>
+        </div>
+    </div>
+    <div id="zone_right" style="">
+        <div style="margin:20px;float:left;color:blue;">
+            使用Html5的<span style="font-weight:900;font-size:16px;">websocket</span>传输协议<br><br>服务端基于<span style="font-weight:900;font-size:16px;">完成端口</span>的socket监听方式<br><br><span style="font-size:16px;">完整源码请联系作者<br>QQ：<br>微信：</span><br><br>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="../js/index.js"></script>
+</body>
+</html>

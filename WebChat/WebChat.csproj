@@ -61,12 +61,20 @@
     <Content Include="APP_Data\WebChat_log.ldf">
       <DependentUpon>WebChat.mdf</DependentUpon>
     </Content>
+    <Content Include="css\bootstrap.min.css" />
+    <Content Include="css\index.css" />
+    <Content Include="css\layer.css" />
     <Content Include="css\style2.css" />
+    <Content Include="html\WebChat.html" />
+    <Content Include="images\logo.png" />
+    <Content Include="images\msgclear.png" />
+    <Content Include="js\index.js" />
+    <Content Include="js\jquery-1.9.1.min.js" />
     <Content Include="js\jquery.form.js" />
     <Content Include="js\jquery1.8.3.min.js" />
     <Content Include="js\jquery1.js" />
     <Content Include="js\Particleground.js" />
-    <Content Include="Login.html" />
+    <Content Include="html\Login.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +92,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="html\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{34c144fa-4090-4bbe-b43d-8aaac56f30f5}</Project>

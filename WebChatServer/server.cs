@@ -15,13 +15,19 @@ namespace WebChatServer
         {
             FleckLog.Level = LogLevel.Debug;
             int serverport = 8181;//服务端端口号
-            IPEndPoint point = new IPEndPoint(getLocalmachineIPAddress(), serverport);
-            var allSockets = new List<IWebSocketConnection>();
+            IPEndPoint point = new IPEndPoint(getLocalmachineIPAddress(), serverport);          
             var server = new WebSocketServer("ws://"+point);
+
+            var allSockets = new List<IWebSocketConnection>();
+            Dictionary<IWebSocketConnection, string> allOnlineUser = new Dictionary<IWebSocketConnection, string>();
+
+            string[] mgs;
+
             server.Start(socket =>
                 {
                     socket.OnOpen = () =>
                         {
+                            allSockets.Add(socket);
                             //链接成功
                         };
                     socket.OnClose = () =>
@@ -30,6 +36,19 @@ namespace WebChatServer
                         };
                     socket.OnMessage = message =>
                         {
+                            mgs = message.Split('|');
+                            switch (mgs[0])
+                            {
+                                case "login":
+                                    allOnlineUser.Add(socket, mgs[1]); 
+                                    break;
+                                case "talk": break;
+                            }
+                            Console.WriteLine("{0}",mgs[1]);
+                            //switch (mgs[0])
+                            //{
+                                
+                            //}
                             //服务端接收到客户端消息后
                         };
                 });
