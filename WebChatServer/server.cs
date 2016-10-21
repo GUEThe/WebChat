@@ -29,6 +29,7 @@ namespace WebChatServer
                         {
                             allSockets.Add(socket);
                             //链接成功
+                           
                         };
                     socket.OnClose = () =>
                         {
@@ -80,6 +81,6 @@ namespace WebChatServer
             }
 
             return ipEntry.AddressList[0];
-        }      
+        }
     }
 }
