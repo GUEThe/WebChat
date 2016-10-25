@@ -1,4 +1,5 @@
-﻿using Fleck;
+﻿using DAL;
+using Fleck;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +42,12 @@ namespace WebChatServer
                             switch (mgs[0])
                             {
                                 case "login":
-                                    allOnlineUser.Add(socket, mgs[1]); 
+                                    allOnlineUser.Add(socket, mgs[1]);
+                                    Servers.updateuserlist(allOnlineUser, allSockets);
                                     break;
-                                case "talk": break;
+                                case "talk":
+                                    Servers.SendSingleMsg(allOnlineUser, mgs);   
+                                    break;
                             }
                             Console.WriteLine("{0}",mgs[1]);
                             //switch (mgs[0])
