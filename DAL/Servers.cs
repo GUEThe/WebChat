@@ -21,8 +21,7 @@ namespace DAL
         }
 
 
-        public static void updateuserlist(Dictionary<IWebSocketConnection, String> allOnlineUsers,
-                                   List<IWebSocketConnection> allSockets)
+        public static void updateuserlist(Dictionary<IWebSocketConnection, String> allOnlineUsers)
         {
            
                 //以 username1|username2|username3|...的方式返回在线用户名列表
@@ -87,6 +86,51 @@ namespace DAL
                     string username = array[1];
                     sendMsg ="betold|"+ username + "|" + array[3];//构建发送的消息
                     kv.Key.Send(sendMsg);
+                }
+            }
+        }
+        public static int Register(string username,string password)//注册
+        {
+            return SqlHelper.ExecuteNonQuery(
+                "insert into T_Users(username,password) values(@username,@password)",
+                new SqlParameter("@username", username),
+                new SqlParameter("@password", password)
+                );
+        }
+        public static DataTable checkRegister(string username)//检测用户名是否已被占用
+        {
+            return SqlHelper.ExecuteDataTable(
+                "select id from T_Users where username =@username",
+                new SqlParameter("@username", username)
+                );
+        }
+        public static DataTable findFriend(string username)
+        {
+            return SqlHelper.ExecuteDataTable(
+               "select username from T_Users where username like '%'+@SearchString+'%' order by id desc",
+               new SqlParameter("@SearchString", username)
+               );
+        }
+        public static void findMyFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)
+        {
+            DataTable tmF = findFriend(mgs[2]);
+            string MF=mgs[0]+"|"+mgs[1];
+            if (tmF.Rows.Count == 0)
+            {
+                MF += "|" + "null";
+            }
+            else
+            {
+                for (int i = 0; i < tmF.Rows.Count; i++)
+                {
+                    MF += "|" + tmF.Rows[i]["username"];
+                }
+            }
+            foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
+            {
+                if (kv.Value == mgs[1])
+                {
+                    kv.Key.Send(MF);
                 }
             }
         }

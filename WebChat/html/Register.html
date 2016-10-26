@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>WebChat登录</title>
+    <title>WebChat注册</title>
     <meta name="author" content="DeathGhost" />
     <link rel="stylesheet" type="text/css" href="../css/style2.css" />
     <style>
@@ -31,45 +31,50 @@
                 success: function (re_text) {
                     //alert(re_text);
                     if (re_text == "OK") {
-                        //alert(re_text);
-                        location.href = "WebChat.html";
-                    } else {
-                        alert("用户名或密码错误！");
-                        subm.value = "立即登陆";
+                        alert(re_text);
+                        //location.href = "Login.html";
+                    }
+                    else if (re_text == "NO") {
+                        alert("账户名不可用！\n请重新输入！");
+                        subm.value = "立即注册";
+                    }
+                    else {
+                        alert("未知错误！");
+                        subm.value = "立即注册";
                     }
                 },
                 error: function (res_text) {
-                    subm.value = "立即登陆";
+                    subm.value = "立即注册";
                     error_mess = res_text.responseText
                     error_mess = error_mess.replace(/\s/g, " ");
                     error_mess = error_mess.replace(/.+<title>(.+)<\/title>.+/g, "$1");
                     alert("服务器错误：\n" + error_mess);
                 }
             };
-            $("#login").ajaxForm(options);          
+            $("#register").ajaxForm(options);
         });
         function check() {
             var subm = document.getElementById("subm");
             var usr = document.getElementById("username");
             var paw = document.getElementById("password");
-            subm.value = "正在登陆。。。";
+            subm.value = "正在注册。。。";
             if (usr.value == "" || paw.value == "") {
                 alert("用户名或密码不能为空！");
-                subm.value = "立即登陆";
+                subm.value = "立即注册";
                 return false;
             }
             return true;
         }
-        function Reg() {
-            location.href = "Register.html";
+        function Rl() {
+            location.href = "Login.html";
         }
     </script>
 </head>
 <body>
-    <form action="../ashx/login.ashx" method="post" id="login" onsubmit="return check()">
+    <form action="../ashx/register.ashx" method="post" id="register" onsubmit="return check()">
         <dl class="admin_login">
             <dt>
-                <strong>WebChat</strong>
+                <strong>注册WebChat账户</strong>
                 <em>Chat With World</em>
             </dt>
             <dd class="user_icon">
@@ -86,10 +91,10 @@
                 <input type="button" value="验证码核验" class="ver_btn" onclick="validate();">
             </dd>-->
             <dd>
-                <input type="submit" value="立即登陆" class="submit_btn" id="subm" />
+                <input type="submit" value="立即注册" class="submit_btn" id="subm" />
             </dd>
             <dd>
-                <input type="button" value="立即注册" class="submit_btn" id="res" onclick="Reg()" />
+                <input type="button" value="返回登陆" class="submit_btn" id="res" onclick="Rl()" />
             </dd>
         </dl>
     </form>

@@ -18,10 +18,20 @@ function talkToSomeone(ws, username) {
     var div_msgbox = document.getElementById("div_msgbox");
     var myDate = new Date();
     var timeNow = myDate.toLocaleTimeString();     //获取当前时间
-    massage = "talk|" + username + "|" + chat_with.innerText + "|" + inp_say.value;
+    if (String(inp_say.value).indexOf("|") >= 0) {
+        alert("含有非法字符“|”！\n请重新输入！");
+        return false;
+    }
+    if (chat_with.innerHTML == "公共聊天室") {
+        massage = "talkToAll|" + username + "|" + chat_with.innerText + "|" + inp_say.value;
+    }
+    else {
+        massage = "talk|" + username + "|" + chat_with.innerText + "|" + inp_say.value;
+    }
     div_msgbox.innerHTML += isayp1 + timeNow + isayp2 + username + isayp3 + inp_say.value + isayp4;
     inp_say.value = null;
     ws.send(massage);
+    div_msgbox.scrollTop = div_msgbox.scrollHeight;
 }
 function beTold(mge) {
     var MGpart1="<div class='chatbox' style='float:left'><div style='text-align:left'><span style='font-weight:900;color:#6d6d6d'>";
@@ -33,12 +43,21 @@ function beTold(mge) {
     var timeNow = myDate.toLocaleTimeString();     //获取当前时间
     var id = escape(mge[1]);
     id = id.replace(/\%u/g, "U");
-    $('#'+id).prepend("<span class='badge'>1</span>");
-    //div_msgbox.innerHTML += MGpart1 + mge[1] + MGpart2 + timeNow + MGpart3 + mge[2] + MGpart4;
+    //$('#'+id).prepend("<span class='badge'>1</span>");
+    $("#user_list a").removeClass("list-group-item active");
+    $("#user_list a").addClass("list-group-item");
+    $('#' + id).addClass("active");
+    var chat_with = document.getElementById("chat_with");
+    if (chat_with.innerHTML != mge[1]) {
+        chat_with.innerHTML = mge[1];
+        div_msgbox.innerHTML = "";
+    }
+    div_msgbox.innerHTML += MGpart1 + mge[1] + MGpart2 + timeNow + MGpart3 + mge[2] + MGpart4;
+    div_msgbox.scrollTop = div_msgbox.scrollHeight;
 }
 function UpdateMFList(mge) {
     var MF_list = document.getElementById("user_list");
-    MF_list.innerHTML = "";
+    MF_list.innerHTML = "<a id='public_chat' class='list-group-item' onfocus='this.blur()'><span class='badge'></span><span style='margin-right:5px;' class='glyphicon glyphicon-user'></span><span class='nickname'>公共聊天室<span></span></span></a>";
     var nowusers_count = document.getElementById("nowusers_count");
     var MFpart1="<a id='";
     var MFpart2="' class='list-group-item' onfocus='this.blur()' onclick=''><span class='badge'></span><span style='margin-right:5px;' class='glyphicon glyphicon-user'></span><span class='nickname'>";
@@ -49,10 +68,8 @@ function UpdateMFList(mge) {
         id = id.replace(/\%u/g, "U");
         MF_list.innerHTML += MFpart1+id+MFpart2 + mge[i] + Mfpart3;
     }
-}
-function UpdateMF_count(mge) {
-    var nowusers_count = document.getElementById("nowusers_count");
-    nowusers_count.innerHTML = mge.length;
+    nowusers_count.innerHTML = mge.length - 1;
+    $("#public_chat").addClass("list-group-item active");
 }
     
 
@@ -68,18 +85,26 @@ $(document).ready(function () {
     $("#nav_action").width(window.innerWidth - $("#div_msgpanel").width() - $("#zone_left").width() - 40);
     $("#zone_left").show();
     $("#zone_center").show();//页面设置
-    //var id = escape("王少琨");
-    //id=id.replace(/\%u/g,"U")
 
-
+    //初始化
+    var chat_with = document.getElementById("chat_with");
+    chat_with.innerHTML = "公共聊天室";
+    var div_msgbox = document.getElementById("div_msgbox");
+    div_msgbox.innerHTML = "";
     
 
-    
+
+    $("#user_list a").click(function () {
+        $("#user_list a").removeClass("list-group-item active");
+        $("#user_list a").addClass("list-group-item");
+        $(this).addClass("active");
+        $("#chat_with").html($(this).children(".nickname").text());
+    });
 
     mge = new Array;
     var massage;
     var username = getCookie("username");
-    if (username == null)
+    if (username == null || username == "")
     {
         location.href = "Login.html";
     }
@@ -103,7 +128,6 @@ $(document).ready(function () {
         switch (mge[0]){
             case "olfriend":
                 UpdateMFList(mge);
-                UpdateMF_count(mge)
                 $("#user_list a").click(function () {
                     $("#user_list a").removeClass("list-group-item active");
                     $("#user_list a").addClass("list-group-item");

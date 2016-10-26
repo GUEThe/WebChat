@@ -65,6 +65,7 @@
     <Content Include="css\index.css" />
     <Content Include="css\layer.css" />
     <Content Include="css\style2.css" />
+    <Content Include="html\Register.html" />
     <Content Include="html\WebChat.html" />
     <Content Include="images\logo.png" />
     <Content Include="images\msgclear.png" />
@@ -81,10 +82,14 @@
     <Compile Include="ashx\login.ashx.cs">
       <DependentUpon>login.ashx</DependentUpon>
     </Compile>
+    <Compile Include="ashx\register.ashx.cs">
+      <DependentUpon>register.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ashx\login.ashx" />
+    <Content Include="ashx\register.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

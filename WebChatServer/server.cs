@@ -19,7 +19,7 @@ namespace WebChatServer
             IPEndPoint point = new IPEndPoint(getLocalmachineIPAddress(), serverport);          
             var server = new WebSocketServer("ws://"+point);
 
-            var allSockets = new List<IWebSocketConnection>();
+            //var allSockets = new List<IWebSocketConnection>();
             Dictionary<IWebSocketConnection, string> allOnlineUser = new Dictionary<IWebSocketConnection, string>();
 
             string[] mgs;
@@ -28,12 +28,13 @@ namespace WebChatServer
                 {
                     socket.OnOpen = () =>
                         {
-                            allSockets.Add(socket);
-                            //链接成功
-                           
+                            //链接成功                          
                         };
                     socket.OnClose = () =>
                         {
+                            allOnlineUser.Remove(socket);
+                            Servers.updateuserlist(allOnlineUser);
+
                             //关闭链接
                         };
                     socket.OnMessage = message =>
@@ -43,13 +44,13 @@ namespace WebChatServer
                             {
                                 case "login":
                                     allOnlineUser.Add(socket, mgs[1]);
-                                    Servers.updateuserlist(allOnlineUser, allSockets);
+                                    Servers.updateuserlist(allOnlineUser);
+                                    Console.WriteLine("{0} login", mgs[1]);
                                     break;
                                 case "talk":
                                     Servers.SendSingleMsg(allOnlineUser, mgs);   
                                     break;
                             }
-                            Console.WriteLine("{0}",mgs[1]);
                             //switch (mgs[0])
                             //{
                                 
@@ -63,9 +64,9 @@ namespace WebChatServer
             var input = Console.ReadLine();
             while (input != "exit")
             {
-                foreach (var socket in allSockets.ToList())
+                foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUser)
                 {
-                    socket.Send(input);
+                    kv.Key.Send(input);
                 }
                 input = Console.ReadLine();
             }
