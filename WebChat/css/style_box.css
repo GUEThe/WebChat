@@ -1,0 +1,20 @@
+﻿@charset "UTF-8";
+@import url(jquery.mCustomScrollbar.css);
+
+/*pop*/
+.pop_bg, .station_dcl,.pro_stop, .an_q, .review{display:none;background:rgba(0,0,0,.35);width:100%;height:100%;position:fixed;top:0;left:0;z-index:999;}
+.pop_cont{background:white;min-width:300px;height:auto;overflow:hidden;position:absolute;top:20%;left:50%;margin-left:-150px;}
+.pop_cont h3{height:51px;line-height:51px;background:#d6e9c6;color:#555;font-size:17px;font-weight:bold;margin:0;padding:0 1em;}
+.pop_cont .pop_cont_text{padding:10px;line-height:1.3;color:grey;}
+.pop_cont .pop_cont_input{padding:10px;text-align:center;}
+.pop_cont .pop_cont_input li{margin:5px 0;text-align:left;overflow:hidden;}
+.pop_cont .pop_cont_input li .ttl{display:inline-block;}
+.pop_cont .pop_cont_input li .textbox{border:1px #d2d2d2 solid;/*width:200px;*/display:inline-block;}
+.pop_cont .pop_cont_input li .select{border:1px #d2d2d2 solid;}
+.pop_cont .pop_cont_input li .textarea{border:1px #d2d2d2 solid;}
+.pop_cont .btm_btn{padding:6px 0;text-align:center;}
+.pop_cont .input_btn{display:inline-block;height:27px;border:none;background:none;padding:0 20px;}
+.pop_cont .trueBtn{background:#19a97b;color:white;border:1px #19a97b solid;border-radius:2px;}
+.pop_cont .trueBtn:hover{background:#5cb85c;border-radius:0;border:1px #4cae4c solid;}
+.pop_cont .falseBtn{background:#fafafa;color:grey;border:1px #d2d2d2 solid;border-radius:2px;}
+.pop_cont .falseBtn:hover,.pop_cont .btm_btn .input_btn_02:active{background:#f0f0f0;border-radius:0;color:#818181;text-shadow:0 1px 1px white;}

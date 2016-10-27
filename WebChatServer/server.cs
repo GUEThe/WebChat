@@ -50,6 +50,13 @@ namespace WebChatServer
                                 case "talk":
                                     Servers.SendSingleMsg(allOnlineUser, mgs);   
                                     break;
+                                case "findFriend":
+                                    Servers.findMyFriend(allOnlineUser, mgs);
+                                    break;
+                                case "addFriend":
+                                    Servers.addFriend(allOnlineUser, mgs);
+                                    Servers.updateuserlist(allOnlineUser);
+                                    break;
                             }
                             //switch (mgs[0])
                             //{

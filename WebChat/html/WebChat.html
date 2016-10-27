@@ -7,11 +7,43 @@
     <title>WebChat</title>
     <meta content="WebSocket WebChat" name="description">
     <meta content="WebSocket WebChat" name="keywords">
+    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/index.css">
-    <!-- <link rel="stylesheet" href="./来聊吧_files/layer.css" id="layui_layer_skinlayercss">-->
+    <link href="../css/style_box.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            $(".pop_bg").hide();
+            $("#false").click(function () {
+                $(".pop_bg").hide();
+                var temp = document.getElementById("strFName");
+                temp.value = null;
+                temp = document.getElementById("friendList");
+                temp.innerHTML = null;
+            });
+        });
+        function show() {
+            $(".pop_bg").show();
+        }
+    </script>     
 </head>
 <body>
+    <section class="pop_bg">
+        <div class="pop_cont">
+            <h3>添加好友</h3>
+            <input type="button" value="取消" id="false" class="input_btn falseBtn" style="margin-right:21px;float: right;margin-top: -43px;" />
+            <div style="padding:20px">
+                    <div class="txtbox floatL edit_input">
+                        <label class="sttl" style="color: #555;font-size: 15px;">好友昵称：</label>
+                        <input type="text" id="strFName" class="textarea1" />
+                        <input type="button" id="Search" value="搜索" class="input_btn trueBtn" />
+                    </div>
+            </div>
+            <div id="friendList">
+            </div>
+        </div>
+    </section>
+
     <div id="zone_left" onselectstart="return false;" style="height: 900px; display: block;">
         <div style="height:150px;margin-left:10px;">
             <img style="float:left;" src="../images/logo.png"><div style="float:left;color:orange; font-size:30px;font-weight:900;margin-left:15px;margin-top:40px;">WebChat</div>
@@ -22,8 +54,9 @@
                 <span class="input-group-addon" style="color:orange;">你的昵称</span>
                 <input readonly="readonly" id="myname" type="text" class="form-control" maxlength="10">
                 <span id="btn_getnick" class="input-group-btn">
-                    <button class="btn btn-default" type="button">
-                        <span style="color:orange;">+</span>
+                    <button class="btn btn-default" type="button" onclick="show()">
+                        <!--<span style="color:orange;">+</span>-->
+                        <img title="添加好友" src="../images/add.png" style="cursor:pointer;width:18px;height:18px" />
                     </button>
                 </span>
             </div>
@@ -38,6 +71,14 @@
                 <span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>
                 <span class="nickname">
                     公共聊天室<span>
+                    </span>
+                </span>
+            </a>
+            <a id="" class="list-group-item" onfocus="this.blur()" onclick="">
+                <span class="badge"></span>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>
+                <span class="nickname">
+                    测试<span>
                     </span>
                 </span>
             </a>
@@ -90,7 +131,6 @@
             使用Html5的<span style="font-weight:900;font-size:16px;">websocket</span>传输协议<br><br>服务端基于C#<span style="font-weight:900;font-size:16px;">Fleck类库</span>的WebSocket服务器<br><br><span style="font-size:16px;">完整源码请联系作者<br>QQ：<br>微信：</span><br><br>
         </div>
     </div>
-    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="../js/index.js"></script>
 </body>
 </html>

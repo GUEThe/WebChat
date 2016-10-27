@@ -21,7 +21,7 @@ namespace DAL
         }
 
 
-        public static void updateuserlist(Dictionary<IWebSocketConnection, String> allOnlineUsers)
+        public static void updateuserlist(Dictionary<IWebSocketConnection, String> allOnlineUsers)//更新在线用户列表
         {
            
                 //以 username1|username2|username3|...的方式返回在线用户名列表
@@ -49,7 +49,7 @@ namespace DAL
                     kv.Key.Send(list);  
                 }
                 //allSockets.ToList().ForEach(s => s.Send(list));
-            
+                return;
         }
 
         //private static DataTable GetMyFriend(string a)
@@ -88,6 +88,7 @@ namespace DAL
                     kv.Key.Send(sendMsg);
                 }
             }
+            return;
         }
         public static int Register(string username,string password)//注册
         {
@@ -104,14 +105,14 @@ namespace DAL
                 new SqlParameter("@username", username)
                 );
         }
-        public static DataTable findFriend(string username)
+        public static DataTable findFriend(string username)//从数据库中查找好友
         {
             return SqlHelper.ExecuteDataTable(
                "select username from T_Users where username like '%'+@SearchString+'%' order by id desc",
                new SqlParameter("@SearchString", username)
                );
         }
-        public static void findMyFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)
+        public static void findMyFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)//查找到好友并回传
         {
             DataTable tmF = findFriend(mgs[2]);
             string MF=mgs[0]+"|"+mgs[1];
@@ -133,6 +134,63 @@ namespace DAL
                     kv.Key.Send(MF);
                 }
             }
+            return;
+        }
+        public static DataTable chackIsFriendOrNot(string[] mgs)//检查是否已是好友
+        {
+            return SqlHelper.ExecuteDataTable(@"select * from T_Friend where (username=@username and friendname=@friendname) or 
+                                             (username=@friendname and friendname=@username )",
+                  new SqlParameter("@username",mgs[1]),
+                  new SqlParameter("@friendname",mgs[2])
+                  );
+        }
+        public static void addFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)
+        {
+            int temp;
+            string m=null;
+            DataTable chack = chackIsFriendOrNot(mgs);
+            if (mgs[1] == mgs[2])
+            {
+                m = mgs[0] + "|" + mgs[1] + "|" + mgs[2] + "|" + "0";
+                foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
+                {
+                    if (kv.Value == mgs[1])
+                    {
+                        kv.Key.Send(m);
+                    }
+                }
+                return;
+            }
+            else if (chack.Rows.Count == 0)
+            {
+                temp = SqlHelper.ExecuteNonQuery("insert into T_Friend(username,friendname) values(@username,@friendname)",
+                new SqlParameter("@username", mgs[1]),
+                new SqlParameter("@friendname", mgs[2])
+                );
+                if (temp == 1)
+                {
+                    m = mgs[0] + "|" + mgs[1]+"|"+mgs[2]+"|" + "1";
+                    foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
+                    {
+                        if (kv.Value == mgs[1])
+                        {
+                            kv.Key.Send(m);
+                        }
+                    }
+                }                
+            }
+            else
+            {
+                m = mgs[0] + "|" + mgs[1] + "|" + mgs[2] + "|" + "2";
+                foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
+                {
+                    if (kv.Value == mgs[1])
+                    {
+                        kv.Key.Send(m);
+                    }
+                }
+            }
+            return;
         }
     }
 }

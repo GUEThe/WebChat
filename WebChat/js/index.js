@@ -1,4 +1,14 @@
-﻿function getCookie(username) {
+﻿function clickOn() {
+    $("#user_list a").click(function () {
+        $("#user_list a").removeClass("list-group-item active");
+        $("#user_list a").addClass("list-group-item");
+        $(this).addClass("active");
+        $("#chat_with").html($(this).children(".nickname").text());
+    });
+}
+
+
+function getCookie(username) {
     var arr = document.cookie.match(new RegExp("(^| )" + username + "=([^;]*)(;|$)"));
     if (arr != null) {
         return unescape(arr[2]);
@@ -33,6 +43,43 @@ function talkToSomeone(ws, username) {
     ws.send(massage);
     div_msgbox.scrollTop = div_msgbox.scrollHeight;
 }
+
+function findFriend(ws,username) {
+    var Fname = document.getElementById("strFName");
+    var mgs = "findFriend|" + username + "|" + Fname.value;
+    ws.send(mgs);
+}
+function getFriend(mgs) {
+    var friendList = document.getElementById("friendList");
+    var MFpart1 = "<a id='";
+    var MFpart2 = "' class='list-group-item' onfocus='this.blur()' onclick=''><span class='badge'></span><span style='margin-right:5px;' class='glyphicon glyphicon-user'></span><span class='nickname'>";
+    var Mfpart3 = "<span></span></span></a>";
+    friendList.innerHTML = null;
+    for (var i = 2; i < mgs.length; i++) {
+        friendList.innerHTML += MFpart1 + MFpart2 + mgs[i] + Mfpart3;
+    }
+
+}
+function addFriend(ws,username) {
+    $("#friendList a").click(function () {
+        var temp = $(this).find(".nickname");
+        if (confirm("确定添加" + temp[0].innerText + "好友？")) {
+            var mgs = "addFriend|" + username + "|" + temp[0].innerText;
+            ws.send(mgs);
+        }
+    });
+}
+function chackAddFriend(mgs) {
+    if (mgs[3] == 1) {
+        alert("成功添加" + mgs[2] + "为好友！");
+    }
+    else if (mgs[3] == 0) {
+        alert("无法添加自己为好友！");
+    }
+    else if (mgs[3] == 2) {
+        alert("已是好友关系！");
+    }
+}
 function beTold(mge) {
     var MGpart1="<div class='chatbox' style='float:left'><div style='text-align:left'><span style='font-weight:900;color:#6d6d6d'>";
     var MGpart2="</span><span style='color:#d2d2d2;'>";
@@ -41,12 +88,17 @@ function beTold(mge) {
     var div_msgbox = document.getElementById("div_msgbox");
     var myDate = new Date();
     var timeNow = myDate.toLocaleTimeString();     //获取当前时间
-    var id = escape(mge[1]);
-    id = id.replace(/\%u/g, "U");
+    //var id = escape(mge[1]);
+    //id = id.replace(/\%u/g, "U");
     //$('#'+id).prepend("<span class='badge'>1</span>");
     $("#user_list a").removeClass("list-group-item active");
     $("#user_list a").addClass("list-group-item");
-    $('#' + id).addClass("active");
+    var arr = $("#user_list a").find(".nickname");
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i].innerText == mge[1]) {
+            arr[i].parentElement.className += " active";
+        }        
+    }
     var chat_with = document.getElementById("chat_with");
     if (chat_with.innerHTML != mge[1]) {
         chat_with.innerHTML = mge[1];
@@ -66,10 +118,17 @@ function UpdateMFList(mge) {
     for (i = 1; i < mge.length; i++) {
         var id = escape(mge[i]);
         id = id.replace(/\%u/g, "U");
-        MF_list.innerHTML += MFpart1+id+MFpart2 + mge[i] + Mfpart3;
+        MF_list.innerHTML += MFpart1+MFpart2 + mge[i] + Mfpart3;
     }
     nowusers_count.innerHTML = mge.length - 1;
-    $("#public_chat").addClass("list-group-item active");
+    var arr = $("#user_list a").find(".nickname");
+    var chat_with = document.getElementById("chat_with");
+    for (var i = 0; i < arr.length; i++) {
+        if (chat_with.innerText == arr[i].innerText) {
+            arr[i].parentElement.className += " active";
+        }
+    }
+    //$("#public_chat").addClass("list-group-item active");
 }
     
 
@@ -89,25 +148,28 @@ $(document).ready(function () {
     //初始化
     var chat_with = document.getElementById("chat_with");
     chat_with.innerHTML = "公共聊天室";
+    $("#public_chat").addClass("list-group-item active");
     var div_msgbox = document.getElementById("div_msgbox");
     div_msgbox.innerHTML = "";
     
 
 
-    $("#user_list a").click(function () {
-        $("#user_list a").removeClass("list-group-item active");
-        $("#user_list a").addClass("list-group-item");
-        $(this).addClass("active");
-        $("#chat_with").html($(this).children(".nickname").text());
-    });
-
+    //$("#user_list a").click(function () {
+    //    $("#user_list a").removeClass("list-group-item active");
+    //    $("#user_list a").addClass("list-group-item");
+    //    $(this).addClass("active");
+    //    //var t = $(this).find(".nickname");
+    //    //alert(t.innerText);
+    //    $("#chat_with").html($(this).children(".nickname").text());
+    //});
+    clickOn();
     mge = new Array;
     var massage;
     var username = getCookie("username");
-    if (username == null || username == "")
-    {
-        location.href = "Login.html";
-    }
+    //if (username == null || username == "")
+    //{
+    //    location.href = "Login.html";
+    //}
 
     var myname = document.getElementById("myname");
     myname.value = username;
@@ -117,7 +179,7 @@ $(document).ready(function () {
 
     var wsImpl = window.WebSocket || window.MozWebSocket;
     var sendForm = document.getElementById("sendForm");
-    window.ws = new wsImpl('ws://125.217.34.242:8181');
+    window.ws = new wsImpl('ws://172.31.13.239:8181');
     ws.onopen = function (evt) {
         massage = "login|" + username;
         ws.send(massage)
@@ -128,20 +190,29 @@ $(document).ready(function () {
         switch (mge[0]){
             case "olfriend":
                 UpdateMFList(mge);
-                $("#user_list a").click(function () {
-                    $("#user_list a").removeClass("list-group-item active");
-                    $("#user_list a").addClass("list-group-item");
-                    $(this).addClass("active");
-                    $("#chat_with").html($(this).children(".nickname").text());
-                });
+                clickOn();
                 break;
             case "betold":
                 beTold(mge);
+                clickOn();
                 break;
+            case "findFriend":
+                getFriend(mge);
+                addFriend(ws, username);
+                clickOn();
+                break;
+            case "addFriend":
+                chackAddFriend(mge);
+                clickOn();
+                break;
+
         }
     }
     $("#btn_say").click(function () {
         talkToSomeone(ws,username);
+    });
+    $("#Search").click(function () {
+        findFriend(ws,username);
     });
 });
 //var start = function () {
