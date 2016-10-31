@@ -8,6 +8,19 @@
     <meta content="WebSocket WebChat" name="description">
     <meta content="WebSocket WebChat" name="keywords">
     <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+    <link href="../js/kindeditor/themes/qq/qq.css" rel="stylesheet" />
+    <script src="../js/kindeditor/kindeditor-all.js"></script>
+    <script src="../js/kindeditor/kindeditor-all-min.js"></script>
+    <script>
+    KindEditor.ready(function (K) {
+        window.editor = K.create('#inp_say', {
+            //themeType:'qq',
+            minWidth: '50px',
+            minHeight: '300px',
+            items: ['emoticons','|','clearhtml', 'fontname', 'fontsize','forecolor',  'bold','italic', 'underline']
+        });
+    });
+    </script>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/index.css">
     <link href="../css/style_box.css" rel="stylesheet" />
@@ -74,14 +87,6 @@
                     </span>
                 </span>
             </a>
-            <a id="" class="list-group-item" onfocus="this.blur()" onclick="">
-                <span class="badge"></span>
-                <span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>
-                <span class="nickname">
-                    测试<span>
-                    </span>
-                </span>
-            </a>
         </div>
     </div>
     <div id="zone_center" style="float: left; margin-left: 10px; margin-top: 10px;">
@@ -122,7 +127,7 @@
         </div>
         <div style="clear:both">
             <form id="sendForm">
-                <textarea id="inp_say" maxlength="500" placeholder="点击左侧用户可私聊" class="form-control" style="height:125px;resize:none;"></textarea>
+                <textarea id="inp_say" maxlength="500" class="form-control" style="height:125px;resize:none;"></textarea>
             </form>
         </div>
     </div>

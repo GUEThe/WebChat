@@ -18,7 +18,7 @@ namespace DAL
                 new SqlParameter("@username", uname),
                 new SqlParameter("@friendname", uname)
                 );
-        }
+        }//获得我的好友
 
 
         public static void updateuserlist(Dictionary<IWebSocketConnection, String> allOnlineUsers)//更新在线用户列表
@@ -52,25 +52,17 @@ namespace DAL
                 return;
         }
 
-        //private static DataTable GetMyFriend(string a)
-        //{
-        //    return SqlHelper.ExecuteDataTable("select * from T_Friend where username=@username or friend=@username",
-        //        new SqlParameter("@username",a)
-        //        );
-        //}
-
         //群发
-        public static void sendMessageToAllUser(List<IWebSocketConnection> allSockets,
-                                         Dictionary<IWebSocketConnection, String> allOnlineUsers,
-                                         string[] array, string message)
+        public static void sendMessageToAllUser(Dictionary<IWebSocketConnection, String> allOnlineUsers,string[] array)
         {
-            foreach (string user in allOnlineUsers.Values)
+            string sendMsg; //获取要发送到客户端的文本
+            foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
             {
-                if (array[1] == user)
+                sendMsg = "talkToAll|" + array[1] + "|" + array[3];
+                if (kv.Value != array[1])
                 {
-                    string username = user;
-                    allSockets.ToList().ForEach(s => s.Send(username + ":" + message));//向所有在线用户群发消息
-                }
+                    kv.Key.Send(sendMsg);
+                }               
             }
         }
 
@@ -90,6 +82,7 @@ namespace DAL
             }
             return;
         }
+
         public static int Register(string username,string password)//注册
         {
             return SqlHelper.ExecuteNonQuery(
@@ -98,6 +91,7 @@ namespace DAL
                 new SqlParameter("@password", password)
                 );
         }
+
         public static DataTable checkRegister(string username)//检测用户名是否已被占用
         {
             return SqlHelper.ExecuteDataTable(
@@ -105,6 +99,7 @@ namespace DAL
                 new SqlParameter("@username", username)
                 );
         }
+
         public static DataTable findFriend(string username)//从数据库中查找好友
         {
             return SqlHelper.ExecuteDataTable(
@@ -112,6 +107,7 @@ namespace DAL
                new SqlParameter("@SearchString", username)
                );
         }
+
         public static void findMyFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)//查找到好友并回传
         {
             DataTable tmF = findFriend(mgs[2]);
@@ -136,6 +132,7 @@ namespace DAL
             }
             return;
         }
+
         public static DataTable chackIsFriendOrNot(string[] mgs)//检查是否已是好友
         {
             return SqlHelper.ExecuteDataTable(@"select * from T_Friend where (username=@username and friendname=@friendname) or 
@@ -144,6 +141,7 @@ namespace DAL
                   new SqlParameter("@friendname",mgs[2])
                   );
         }
+
         public static void addFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)
         {
             int temp;
@@ -191,6 +189,8 @@ namespace DAL
                 }
             }
             return;
-        }
+        }//添加好友
+
+
     }
 }
