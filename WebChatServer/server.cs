@@ -60,6 +60,9 @@ namespace WebChatServer
                                     Servers.addFriend(allOnlineUser, mgs);
                                     Servers.updateuserlist(allOnlineUser);
                                     break;
+                                case "getChatlog":
+                                    Servers.getChatLog(allOnlineUser, mgs);
+                                    break;
                             }
                             //switch (mgs[0])
                             //{

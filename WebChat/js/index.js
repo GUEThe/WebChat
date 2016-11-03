@@ -1,9 +1,17 @@
-﻿function clickOn() {
-    $("#user_list a").click(function () {
+﻿
+
+function clickOn(ws, username) {
+    $("#user_list a").unbind("click").click(function () {
         $("#user_list a").removeClass("list-group-item active");
         $("#user_list a").addClass("list-group-item");
         $(this).addClass("active");
         $("#chat_with").html($(this).children(".nickname").text());
+        var div_msgbox = document.getElementById("div_msgbox");
+        div_msgbox.innerHTML = "";
+        var arr = $(this).find(".badge");
+        arr[0].innerHTML = "";
+        var mgs = "getChatlog|" + username + "|" + $(this).children(".nickname").text();
+        ws.send(mgs);
     });
 }//点击联系人
 
@@ -41,7 +49,7 @@ function talkToSomeone(ws, username) {
         alert("含有非法字符“|”！\n请重新输入！");//判断保留字符串
         return false;
     }
-    massage = "talk|" + username + "|" + chat_with.innerText + "|" + MGpart1 + username + MGpart2 + timeNow + MGpart3 + inp_say.value + MGpart4;
+    massage = "talk|" + username + "|" + chat_with.innerText + "|" + MGpart1 + username + MGpart2 + timeNow + MGpart3 + inp_say.value + MGpart4 + "|" + isayp1 + timeNow + isayp2 + username + isayp3 + inp_say.value + isayp4;
 
     div_msgbox.innerHTML += isayp1 + timeNow + isayp2 + username + isayp3 + inp_say.value + isayp4;
 
@@ -85,24 +93,35 @@ function beTold(mge) {
     var div_msgbox = document.getElementById("div_msgbox");
     var myDate = new Date();
     var timeNow = myDate.toLocaleTimeString();     //获取当前时间
-    //var id = escape(mge[1]);
-    //id = id.replace(/\%u/g, "U");
-    //$('#'+id).prepend("<span class='badge'>1</span>");
-    $("#user_list a").removeClass("list-group-item active");
-    $("#user_list a").addClass("list-group-item");
-    var arr = $("#user_list a").find(".nickname");
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i].innerText == mge[1]) {
-            arr[i].parentElement.className += " active";
+    var temp = $("#user_list").find(".active");
+    if (temp[0].innerText.indexOf(mge[1]) >=0 ) {
+        div_msgbox.innerHTML += mge[2];
+        div_msgbox.scrollTop = div_msgbox.scrollHeight;
+    }
+    else {
+        var arr = $("#user_list a").find(".nickname");
+        var arr1 = $("#user_list a").find(".badge");
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i].innerText == mge[1]) {
+                arr1[i].innerHTML = "New";
+            }
         }
     }
-    var chat_with = document.getElementById("chat_with");
-    if (chat_with.innerHTML != mge[1]) {
-        chat_with.innerHTML = mge[1];
-        div_msgbox.innerHTML = "";
-    }
-    div_msgbox.innerHTML +=mge[2];
-    div_msgbox.scrollTop = div_msgbox.scrollHeight;
+    //$("#user_list a").removeClass("list-group-item active");
+    //$("#user_list a").addClass("list-group-item");
+    //var arr = $("#user_list a").find(".nickname");
+    //for (var i = 0; i < arr.length; i++) {
+    //    if (arr[i].innerText == mge[1]) {
+    //        arr[i].parentElement.className += " active";
+    //    }
+    //}
+    //var chat_with = document.getElementById("chat_with");
+    //if (chat_with.innerHTML != mge[1]) {
+    //    chat_with.innerHTML = mge[1];
+    //    div_msgbox.innerHTML = "";
+    //}
+    //div_msgbox.innerHTML +=mge[2];
+    //div_msgbox.scrollTop = div_msgbox.scrollHeight;
 }//收到好友消息
 
 
@@ -110,9 +129,6 @@ function beToldToAll(mge) {
     var div_msgbox = document.getElementById("div_msgbox");
     var myDate = new Date();
     var timeNow = myDate.toLocaleTimeString();     //获取当前时间
-    //var id = escape(mge[1]);
-    //id = id.replace(/\%u/g, "U");
-    //$('#'+id).prepend("<span class='badge'>1</span>");
     $("#user_list a").removeClass("list-group-item active");
     $("#user_list a").addClass("list-group-item");
     var arr = $("#user_list a").find(".nickname");
@@ -189,46 +205,80 @@ function checkAddFriend(mgs) {
 
 function UpdateMFList(mge) {
     var MF_list = document.getElementById("user_list");
+    MF_list.innerHTML = "<a id='public_chat' class='list-group-item' onfocus='this.blur()' onclick=''><span class='badge'></span><span style='margin-right:5px;' class='glyphicon glyphicon-user'></span><span class='nickname'>公共聊天室<span></span></span></a>";
+
     var nowusers_count = document.getElementById("nowusers_count");
 
-    var MFpart1="<a id='";
+    var MFpart1 = "<a id='";
+    var MFpart2_1 = "' class='list-group-item-un' onfocus='this.blur()' onclick=''><span class='badge'></span><span style='margin-right:5px;' class='glyphicon glyphicon-user'></span><span class='nickname'>";
     var MFpart2="' class='list-group-item' onfocus='this.blur()' onclick=''><span class='badge'></span><span style='margin-right:5px;' class='glyphicon glyphicon-user'></span><span class='nickname'>";
     var Mfpart3 = "<span></span></span></a>";
 
     var arr = $("#user_list a").find(".nickname");
 
+
+    var unonl;
     for (var i = 1; i < mge.length; i++) {
-        var temp = 0;
-        for (var j = 0; j < arr.length; j++) {
-            if (String(arr[j].innerText) != String(mge[i]))
-                temp++;
+        if (mge[i] == "allfriend") {
+            nowusers_count.innerHTML = i - 1;
+            unonl = i;
+            break
         }
-        if (temp == arr.length) {
-            MF_list.innerHTML += MFpart1 + MFpart2 + mge[i] + Mfpart3;
-        }
+        $("#public_chat").after(MFpart1 + MFpart2 + mge[i] + Mfpart3);
+            //MF_list.innerHTML += MFpart1 + MFpart2 + mge[i] + Mfpart3;
     }
-    for (var i = 0; i < arr.length; i++) {
-        for (var j = 1; j < mge.length; j++) {
-            var temp = 0;
-            if (String(arr[i].innerText) == String(mge[j]) || arr[i].innerText=="公共聊天室")
-                temp++;
+    //arr = $("#user_list").find(".list-group-item");
+    //arr[i].children[3].innerText
+    //for (var i = 0; i < arr.length; i++) {
+    //    var t = 0;
+    //    for (var j = 1; j < mge.length; j++) {
+    //        if (mge[j] == "allfriend" && j == 1) {
+                //if (arr.length == 2) {
+                //    arr[1].remove();
+                //}
+    //            break
+    //        }
+    //        if (String(arr[i].innerText) == String(mge[j]) || arr[i].innerText.indexOf('公共聊天室')>-1)
+    //            t++;
+    //    }
+    //    if (t == 0 && String(arr[i].innerText).indexOf('公共聊天室') == -1)
+    //        arr[i].remove();
+    //}
+
+    arr = $("#user_list").find(".list-group-item");
+    for (var i = unonl + 1; i < mge.length; i++) {
+        var tt = 0
+        if (arr.length == 0) {
+            MF_list.innerHTML += MFpart1 + MFpart2_1 + mge[i] + Mfpart3;
         }
-        if (temp == 0)
-            arr[i].parentElement.remove();
+        for (var j = 0; j < arr.length; j++) {
+            if (arr[j].innerText != mge[i])
+                tt++;
+        }
+        if (tt == arr.length)
+            MF_list.innerHTML += MFpart1 + MFpart2_1 + mge[i] + Mfpart3;
     }
 
+    nowusers_count.innerHTML += "/" + String(mge.length - unonl - 1);
     arr = $("#user_list a").find(".nickname");
-    nowusers_count.innerHTML = mge.length - 1;    
     var chat_with = document.getElementById("chat_with");
     for (var i = 0; i < arr.length; i++) {
         if (chat_with.innerText == arr[i].innerText) {
             arr[i].parentElement.className += " active";
         }
     }
-    //$("#public_chat").addClass("list-group-item active");
 }//刷新好友列表
 
-    
+
+function getChatLog(mge) {
+    var div_msgbox = document.getElementById("div_msgbox");
+    var chat_with = document.getElementById("chat_with");
+    if (chat_with.innerText == mge[1]) {
+        div_msgbox.innerHTML = "";
+        div_msgbox.innerHTML = mge[2];
+        div_msgbox.scrollTop = div_msgbox.scrollHeight;
+    }
+}
 
 $(document).ready(function () {
 
@@ -260,7 +310,6 @@ $(document).ready(function () {
     //    //alert(t.innerText);
     //    $("#chat_with").html($(this).children(".nickname").text());
     //});
-    clickOn();
     mge = new Array;
     var massage;
     var username = getCookie("username");
@@ -277,7 +326,7 @@ $(document).ready(function () {
 
     var wsImpl = window.WebSocket || window.MozWebSocket;
     var sendForm = document.getElementById("sendForm");
-    window.ws = new wsImpl('ws://125.217.34.214:8181');
+    window.ws = new wsImpl('ws://125.217.34.240:8181');
     ws.onopen = function (evt) {
         massage = "login|" + username;
         ws.send(massage)
@@ -288,26 +337,30 @@ $(document).ready(function () {
         switch (mge[0]){
             case "olfriend":
                 UpdateMFList(mge);
-                clickOn();
                 break;
             case "betold":
                 beTold(mge);
-                clickOn();
+                //clickOn(ws, username);
                 break;
             case "talkToAll":
                 beToldToAll(mge);
+               // clickOn(ws, username);
                 break;
             case "findFriend":
                 getFriend(mge);
                 addFriend(ws, username);
-                clickOn();
+                //clickOn(ws, username);
                 break;
             case "addFriend":
                 checkAddFriend(mge);
-                clickOn();
+                //clickOn(ws, username);
+                break;
+            case "getChatlog":
+                getChatLog(mge);
                 break;
 
         }
+        clickOn(ws, username);
     }
     $("#btn_say").click(function () {
         checkTalkToWho(ws, username);
