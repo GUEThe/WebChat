@@ -179,7 +179,7 @@ $(document).ready(function () {
 
     var wsImpl = window.WebSocket || window.MozWebSocket;
     var sendForm = document.getElementById("sendForm");
-    window.ws = new wsImpl('ws://172.31.13.239:8181');
+    window.ws = new wsImpl('ws://192.168.3.12:8181');
     ws.onopen = function (evt) {
         massage = "login|" + username;
         ws.send(massage)
