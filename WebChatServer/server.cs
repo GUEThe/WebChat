@@ -7,11 +7,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace WebChatServer
 {
     class server
     {
+
         static void Main(string[] args)
         {
             FleckLog.Level = LogLevel.Debug;
@@ -39,29 +41,29 @@ namespace WebChatServer
                         };
                     socket.OnMessage = message =>
                         {
-                            mgs = message.Split('|');
-                            switch (mgs[0])
+                            Mge mge = JsonConvert.DeserializeObject<Mge>(message);
+                            switch (mge.action)
                             {
                                 case "login":
-                                    allOnlineUser.Add(socket, mgs[1]);
+                                    allOnlineUser.Add(socket, mge.username);
                                     Servers.updateuserlist(allOnlineUser);
-                                    Console.WriteLine("{0} login", mgs[1]);
+                                    Console.WriteLine("{0} login", mge.username);
                                     break;
                                 case "talk":
-                                    Servers.SendSingleMsg(allOnlineUser, mgs);   
+                                    Servers.SendSingleMsg(allOnlineUser, mge);
                                     break;
                                 case "talkToAll":
-                                    Servers.sendMessageToAllUser(allOnlineUser, mgs);
+                                    Servers.sendMessageToAllUser(allOnlineUser, mge);
                                     break;
                                 case "findFriend":
-                                    Servers.findMyFriend(allOnlineUser, mgs);
+                                    Servers.findMyFriend(allOnlineUser, mge);
                                     break;
                                 case "addFriend":
-                                    Servers.addFriend(allOnlineUser, mgs);
+                                    Servers.addFriend(allOnlineUser, mge);
                                     Servers.updateuserlist(allOnlineUser);
                                     break;
                                 case "getChatlog":
-                                    Servers.getChatLog(allOnlineUser, mgs);
+                                    Servers.getChatLog(allOnlineUser, mge);
                                     break;
                             }
                             //switch (mgs[0])
@@ -100,5 +102,6 @@ namespace WebChatServer
 
             return ipEntry.AddressList[0];
         }
+
     }
 }

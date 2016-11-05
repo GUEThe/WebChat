@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace DAL
 {
@@ -24,75 +25,88 @@ namespace DAL
         public static void updateuserlist(Dictionary<IWebSocketConnection, String> allOnlineUsers)//更新在线用户列表
         {
            
-                //以 username1|username2|username3|...的方式返回在线用户名列表
+              
                 DataTable myfriends;
                 
                 foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
                 {
-                    string ollist = "olfriend";
-                    string alllist = "allfriend";
+                    Mge mge = new Mge();
+                    mge.action = "olfriend";
                     myfriends = GetMyFriend(kv.Value);
+                    mge.arrolfriend=new string[myfriends.Rows.Count];
+                    mge.arrallmyfriend = new string[myfriends.Rows.Count];
                     for (int i = 0; i < myfriends.Rows.Count; i++)
                     {
                         if (myfriends.Rows[i]["username"].ToString() == kv.Value)
                         {
-                            alllist += "|" + myfriends.Rows[i]["friendname"];
+                            mge.arrallmyfriend[i] = myfriends.Rows[i]["friendname"].ToString();
                         }
                         if (myfriends.Rows[i]["friendname"].ToString() == kv.Value)
                         {
-                            alllist += "|" + myfriends.Rows[i]["username"];
+                            mge.arrallmyfriend[i] = myfriends.Rows[i]["username"].ToString();
                         }
                         if (myfriends.Rows[i]["username"].ToString()==kv.Value)
                             foreach (KeyValuePair<IWebSocketConnection, String> ky in allOnlineUsers)
                             {
                                 if (myfriends.Rows[i]["friendname"].ToString() == ky.Value && myfriends.Rows[i]["friendname"].ToString() != kv.Value)
-                                    ollist += "|" + myfriends.Rows[i]["friendname"];
+                                {
+                                    mge.arrolfriend[i] = myfriends.Rows[i]["friendname"].ToString();
+                                }
                             }
                         if(myfriends.Rows[i]["friendname"].ToString()==kv.Value)
                             foreach (KeyValuePair<IWebSocketConnection, String> ky in allOnlineUsers)
                             {
                                 if (myfriends.Rows[i]["username"].ToString() == ky.Value && myfriends.Rows[i]["username"].ToString() != kv.Value)
-                                    ollist += "|" + myfriends.Rows[i]["username"];
+                                {
+                                    mge.arrolfriend[i] = myfriends.Rows[i]["username"].ToString();
+                                }
                             }                         
                     }
-                    ollist = ollist + "|" + alllist;
-                    kv.Key.Send(ollist);  
+                    string json = new JavaScriptSerializer().Serialize(mge);
+                    kv.Key.Send(json);  
                 }
                 //allSockets.ToList().ForEach(s => s.Send(list));
                 return;
         }
 
         //群发
-        public static void sendMessageToAllUser(Dictionary<IWebSocketConnection, String> allOnlineUsers,string[] array)
+        public static void sendMessageToAllUser(Dictionary<IWebSocketConnection, String> allOnlineUsers, Mge mge)
         {
-            string sendMsg; //获取要发送到客户端的文本
             foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
             {
-                sendMsg = "talkToAll|" + array[1] + "|" + array[3];
-                if (kv.Value != array[1])
+                mge.action = "talkToAll";
+                mge.chatcontext = mge.chatcontext;
+                string json=new JavaScriptSerializer().Serialize(mge);
+                if (kv.Value != mge.username)
                 {
-                    kv.Key.Send(sendMsg);
+                    kv.Key.Send(json);
                 }               
             }
         }
 
 
         //向指定用户发送消息
-        public static void SendSingleMsg(Dictionary<IWebSocketConnection, String> allOnlineUsers,string[] array)
+        public static void SendSingleMsg(Dictionary<IWebSocketConnection, String> allOnlineUsers, Mge mge)
         {
-            string sendMsg; //获取要发送到客户端的文本
             string[] t_array = new string[4];
-            t_array[1] = array[2];
-            t_array[2] = array[1];
-            t_array[3] = array[4];
+            t_array[1] =mge.chatwith;
+            t_array[2] = mge.username;
+            t_array[3] = mge.chatlog;
             saveChatLog(t_array);
-            saveChatLog(array);
+            t_array[1] = mge.username;
+            t_array[2] = mge.chatwith;
+            t_array[3] = mge.chatcontext;
+            saveChatLog(t_array);
             foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
             {
-                if (array[2] == kv.Value)//匹配用户名
+                if (mge.chatwith == kv.Value)//匹配用户名
                 {
-                    sendMsg = "betold|" + array[1] + "|" + array[3];//构建发送的消息
-                    kv.Key.Send(sendMsg);
+                    Mge sendMsg = new Mge();
+                    sendMsg.action = "betold";
+                    sendMsg.friendname = mge.username;
+                    sendMsg.chatcontext = mge.chatcontext;
+                    string json = new JavaScriptSerializer().Serialize(sendMsg);//构建发送的消息
+                    kv.Key.Send(json);
                 }
             }
             return;
@@ -123,53 +137,64 @@ namespace DAL
                );
         }
 
-        public static void findMyFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)//查找到好友并回传
+        public static void findMyFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, Mge mge)//查找到好友并回传
         {
-            DataTable tmF = findFriend(mgs[2]);
-            string MF=mgs[0]+"|"+mgs[1];
+            DataTable tmF = findFriend(mge.friendname);
+            Mge sendMsg = new Mge();
+            sendMsg.action = "findFriend";
+            sendMsg.username = mge.username;
+            sendMsg.friendname = mge.friendname;
             if (tmF.Rows.Count == 0)
             {
-                MF += "|" + "null";
+                sendMsg.arrfriend = new string[1];
+                sendMsg.arrfriend[0]="";
             }
             else
             {
+                sendMsg.arrfriend = new string[tmF.Rows.Count];
                 for (int i = 0; i < tmF.Rows.Count; i++)
                 {
-                    MF += "|" + tmF.Rows[i]["username"];
+                    sendMsg.arrfriend[i] = tmF.Rows[i]["username"].ToString();
                 }
             }
             foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
             {
-                if (kv.Value == mgs[1])
+                if (kv.Value == mge.username)
                 {
-                    kv.Key.Send(MF);
+                    string json = new JavaScriptSerializer().Serialize(sendMsg);//构建发送的消息
+                    kv.Key.Send(json);
                 }
             }
             return;
         }
 
-        public static DataTable checkIsFriendOrNot(string[] mgs)//检查是否已是好友
+        public static DataTable checkIsFriendOrNot(Mge mge)//检查是否已是好友
         {
             return SqlHelper.ExecuteDataTable(@"select * from T_Friend where (username=@username and friendname=@friendname) or 
                                              (username=@friendname and friendname=@username )",
-                  new SqlParameter("@username",mgs[1]),
-                  new SqlParameter("@friendname",mgs[2])
+                  new SqlParameter("@username",mge.username),
+                  new SqlParameter("@friendname",mge.friendname)
                   );
         }
 
-        public static void addFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)
+        public static void addFriend(Dictionary<IWebSocketConnection, String> allOnlineUsers, Mge mgs)
         {
             int temp;
-            string m=null;
+            Mge sendMsg=new Mge();
+            sendMsg.action = "addFriend";
+            sendMsg.username = mgs.username;
+            sendMsg.friendname = mgs.friendname;
             DataTable chack = checkIsFriendOrNot(mgs);
-            if (mgs[1] == mgs[2])
+            if (mgs.username == mgs.friendname)
             {
-                m = mgs[0] + "|" + mgs[1] + "|" + mgs[2] + "|" + "0";
+                sendMsg.addfriend = 0;
+
                 foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
                 {
-                    if (kv.Value == mgs[1])
+                    if (kv.Value == mgs.username)
                     {
-                        kv.Key.Send(m);
+                        string json = new JavaScriptSerializer().Serialize(sendMsg);//构建发送的消息
+                        kv.Key.Send(json);
                     }
                 }
                 return;
@@ -177,29 +202,31 @@ namespace DAL
             else if (chack.Rows.Count == 0)
             {
                 temp = SqlHelper.ExecuteNonQuery("insert into T_Friend(username,friendname) values(@username,@friendname)",
-                new SqlParameter("@username", mgs[1]),
-                new SqlParameter("@friendname", mgs[2])
+                new SqlParameter("@username", mgs.username),
+                new SqlParameter("@friendname", mgs.friendname)
                 );
                 if (temp == 1)
                 {
-                    m = mgs[0] + "|" + mgs[1]+"|"+mgs[2]+"|" + "1";
+                    sendMsg.addfriend = 1;
                     foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
                     {
-                        if (kv.Value == mgs[1])
+                        if (kv.Value == mgs.username)
                         {
-                            kv.Key.Send(m);
+                            string json = new JavaScriptSerializer().Serialize(sendMsg);//构建发送的消息
+                            kv.Key.Send(json);
                         }
                     }
                 }                
             }
             else
             {
-                m = mgs[0] + "|" + mgs[1] + "|" + mgs[2] + "|" + "2";
+                sendMsg.addfriend = 2;
                 foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
                 {
-                    if (kv.Value == mgs[1])
+                    if (kv.Value == mgs.username)
                     {
-                        kv.Key.Send(m);
+                        string json = new JavaScriptSerializer().Serialize(sendMsg);//构建发送的消息
+                        kv.Key.Send(json);
                     }
                 }
             }
@@ -237,36 +264,62 @@ namespace DAL
             return;
         }//保存聊天记录
 
-        public static void getChatLog(Dictionary<IWebSocketConnection, String> allOnlineUsers, string[] mgs)
+        public static void getChatLog(Dictionary<IWebSocketConnection, String> allOnlineUsers, Mge mgs)
         {
-            if (mgs[2].IndexOf("公共聊天室")>=0)
+            Mge sendMsg = new Mge();
+            sendMsg.action = "getChatlog";
+            sendMsg.username = mgs.username;
+            sendMsg.chatwith = mgs.chatwith;
+            if (mgs.chatwith.IndexOf("公共聊天室")>=0)
             {
                 return;
             }
             DataTable Chatlog = SqlHelper.ExecuteDataTable("select * from T_Chatlog where owner=@owner and chatwith=@chatwith",
-                new SqlParameter("@owner", mgs[1]),
-                new SqlParameter("@chatwith", mgs[2])
+                new SqlParameter("@owner", mgs.username),
+                new SqlParameter("@chatwith", mgs.chatwith)
                 );
-            string m="";
             if (Chatlog.Rows.Count == 1)
             {
-                m = "getChatlog|" + Chatlog.Rows[0]["chatwith"].ToString() + "|" + Chatlog.Rows[0]["chatlog"].ToString();
+                sendMsg.chatlog = Chatlog.Rows[0]["chatlog"].ToString();
+
                 SqlHelper.ExecuteNonQuery("update T_Chatlog set [read]=1 where owner=@owner and chatwith=@chatwith",
-                    new SqlParameter("@owner", mgs[1]),
-                    new SqlParameter("@chatwith", mgs[2])
+                    new SqlParameter("@owner", mgs.username),
+                    new SqlParameter("@chatwith", mgs.chatwith)
                     );
             }
             else if (Chatlog.Rows.Count == 0)
             {
-                m = "getChatlog|" + mgs[2] + "|" + "";
+                sendMsg.chatlog = "";
             }
             foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUsers)
             {
-                if (kv.Value == mgs[1])
+                if (kv.Value == mgs.username)
                 {
-                    kv.Key.Send(m);
+                    string json = new JavaScriptSerializer().Serialize(sendMsg);//构建发送的消息
+                    kv.Key.Send(json);
                 }
             }
         }//聊天记录获取
+
+        public static int createDiscussionGroup(Mge msg)
+        {
+            string id_str = SqlHelper.ExecuteScalar(
+                @"insert into T_Discussiongroups(discussion_group_name) 
+                 vlaue(@discussion_group_name)
+                 select @@identity",
+                new SqlParameter("@discussion_group_name",msg.discussion_group_name)).ToString();
+            int id = int.Parse(id_str);
+            for (int i = 0; i < msg.discussion_groups_member.Length; i++)
+            {
+                SqlHelper.ExecuteNonQuery(
+                    @"insert into T_discussion_groups_member(discussion_group_id,username)
+                      values(@discussion_group_id,@username)",
+                    new SqlParameter("@discussion_group_id", id),
+                    new SqlParameter("@username", msg.discussion_groups_member[i])
+                    );
+            }
+            return id;
+        }//创建讨论组
+
     }
 }
