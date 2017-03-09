@@ -2,6 +2,23 @@
 
 namespace DAL
 {
+    public class comment
+    {
+        public int mymcid { get; set; }
+        public string username { get; set; }
+        public string context { get; set; }
+    }
+    public class MYmc
+    {
+        public int id { get; set; }
+        public string username { get; set; }
+        public string context { get; set; }
+        public string ptime { get; set; }
+
+        public comment[] comments { get; set; }
+
+        public string[] supports { get; set; }
+    }
     public class Mge
     {
         public string action { get; set; }
@@ -16,6 +33,12 @@ namespace DAL
         public string paw { get; set; }
         public int addfriend { get; set; }
         public string discussion_group_name { get; set; }
-        public string[] discussion_groups_member { get; set; }
+        public string[] discussion_group_members { get; set; }
+        public string[] mydiscussiongroups { get; set; }
+        public string publishtime { get; set; }
+        public MYmc[] MYmcs { get; set; }
+        public int page_n { get; set; }
+
+        public int mymcid { get; set; }
     }
 }

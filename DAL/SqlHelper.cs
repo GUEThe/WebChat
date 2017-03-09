@@ -60,7 +60,7 @@ namespace DAL
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
-                        adapter.Fill(dt);
+                         adapter.Fill(dt);
                         return dt;
                     }
                 }

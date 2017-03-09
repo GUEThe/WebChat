@@ -201,6 +201,7 @@ td, th {
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #576b95;
 }
 
 .glyphicon-asterisk:before {
@@ -3418,6 +3419,14 @@ a.badge:hover, a.badge:focus {
     background-color: #fff;
     border: 1px solid #ddd;
 }
+.list-group-item-DG {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: whitesmoke;
+    border: 1px solid #ddd;
+}
 .list-group-item-un {
     position: relative;
     display: block;
@@ -3425,6 +3434,7 @@ a.badge:hover, a.badge:focus {
     margin-bottom: -1px;
     background-color: #d0d0d0;
     border: 1px solid #ddd;
+    color:#555!important;
 }
     .list-group-item:first-child {
         border-top-right-radius: 4px;
@@ -3438,7 +3448,7 @@ a.badge:hover, a.badge:focus {
     }
 
 a.list-group-item, button.list-group-item {
-    color: #555;
+    color:#3c763d; 
 }
 
     a.list-group-item .list-group-item-heading, button.list-group-item .list-group-item-heading {
@@ -3447,7 +3457,7 @@ a.list-group-item, button.list-group-item {
 
     a.list-group-item:hover, button.list-group-item:hover, a.list-group-item:focus, button.list-group-item:focus {
         text-decoration: none;
-        color: #555;
+        color: rgb(255, 140, 60);
         background-color: #f5f5f5;
     }
 
@@ -3470,9 +3480,9 @@ button.list-group-item {
         color: #777;
     }
 
-.list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
+.list-group-item.active,.list-group-item-un.active,.list-group-item-DG.active, .list-group-item.active:hover,.list-group-item-un.active:hover,.list-group-item-DG.active:hover, .list-group-item.active:focus,.list-group-item-un.active:focus,  .list-group-item-DG.active:focus {
     z-index: 2;
-    color: #fff;
+    color: #fff!important;
     background-color: #ffa500;
     border-color: #ffa500;
 }

@@ -3208,7 +3208,7 @@ _extend(KCmd, {
 	insertimage : function(url, title, width, height, border, align) {
 		title = _undef(title, '');
 		border = _undef(border, 0);
-		var html = '<img src="' + _escape(url) + '" data-ke-src="' + _escape(url) + '" ';
+		var html = '<img id="MYimg" style="height:100px" src="' + _escape(url) + '" data-ke-src="' + _escape(url) + '" ';
 		if (width) {
 			html += 'width="' + _escape(width) + '" ';
 		}
@@ -6092,7 +6092,7 @@ KindEditor.lang({
 	map : 'Google地图',
 	baidumap : '百度地图',
 	lineheight : '行距',
-	clearhtml : '清理HTML代码',
+	clearhtml : '清理文本格式',
 	pagebreak : '插入分页符',
 	quickformat : '一键排版',
 	insertfile : '插入文件',

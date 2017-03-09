@@ -10,42 +10,86 @@
     <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
     <link href="../js/kindeditor/themes/qq/qq.css" rel="stylesheet" />
     <script src="../js/kindeditor/kindeditor-all.js"></script>
+    <link href="../js/kindeditor/themes/simple/simple.css" rel="stylesheet" />
     <script src="../js/kindeditor/kindeditor-all-min.js"></script>
     <script>
     KindEditor.ready(function (K) {
         window.editor = K.create('#inp_say', {
-            //themeType:'qq',
+            uploadJson: '../ashx/upload_json.ashx',
+            themeType:'simple',
             minWidth: '50px',
             minHeight: '300px',
-            items: ['emoticons','|','clearhtml', 'fontname', 'fontsize','forecolor',  'bold','italic', 'underline']
+            items: ['emoticons', 'image', '|', 'clearhtml', 'fontname', 'fontsize', 'forecolor', 'bold', 'italic', 'underline']
+        });
+    });
+    KindEditor.ready(function (D) {
+        window.editor2 = D.create('#inp_MCfriends', {
+            uploadJson: '../ashx/upload_json.ashx',
+            //themeType: 'simple',
+            minWidth: '100%',
+            Height: '250px',
+            items: ['emoticons', '|', 'image']
+        });
+    });
+    KindEditor.ready(function (F) {
+        window.editor3 = F.create('#inp_comment', {
+            uploadJson: '../ashx/upload_json.ashx',
+            //themeType: 'simple',
+            minWidth: '100%',
+            Height: '250px',
+            items: ['emoticons']
         });
     });
     </script>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/index.css">
     <link href="../css/style_box.css" rel="stylesheet" />
+    <link href="../css/app.css" rel="stylesheet" />
+    <script src="../js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
             $(".pop_bg").hide();
-            $("#false").click(function () {
-                $(".pop_bg").hide();
-                var temp = document.getElementById("strFName");
-                temp.value = null;
-                temp = document.getElementById("friendList");
-                temp.innerHTML = null;
-            });
+            $(".pro_stop").hide();
+            $(".review").hide();
+            $(".comment").hide();
         });
-        function show() {
-            $(".pop_bg").show();
+    </script> 
+    <style>
+        .test{
+            width:300px!important;
         }
-    </script>     
+    </style>    
 </head>
 <body>
+
+    <section class="comment">
+        <div class="pop_cont">
+            <h3>发表评论</h3>
+            <input type="button" value="取消" id="COMfalse" class="input_btn falseBtn" style="margin-right:77px;float: right;margin-top: -40px;" />
+            <input type="button" value="发表" id="PCOM" class="input_btn falseBtn" style="margin-right:5px;float: right;margin-top: -40px;background-color:#5cb85c;" />
+            <div id="testc" style="">
+                <textarea id="inp_comment"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="review">
+        <div class="pop_cont">
+            <h3>发表朋友圈</h3>
+            <input type="button" value="取消" id="MyMCfalse" class="input_btn falseBtn" style="margin-right:77px;float: right;margin-top: -40px;" />
+            <input type="button" value="发表" id="PMyMC" class="input_btn falseBtn" style="margin-right:5px;float: right;margin-top: -40px;background-color:#5cb85c;" />
+            <div id="testq" style="">
+                <textarea id="inp_MCfriends"></textarea>
+            </div>
+        </div>
+    </section>
+
+
     <section class="pop_bg">
         <div class="pop_cont">
-            <h3>添加好友</h3>
+            <h3 id="addFD">添加好友</h3>
             <input type="button" value="取消" id="false" class="input_btn falseBtn" style="margin-right:21px;float: right;margin-top: -43px;" />
-            <div style="padding:20px">
+            <div id="FNAMe" style="padding:20px">
                     <div class="txtbox floatL edit_input">
                         <label class="sttl" style="color: #555;font-size: 15px;">好友昵称：</label>
                         <input type="text" id="strFName" class="textarea1" />
@@ -57,34 +101,63 @@
         </div>
     </section>
 
+    <section class="pro_stop">
+        <div class="pop_cont">
+            <h3>创建讨论组</h3>
+            <input type="button" value="取消" id="Dfalse" class="input_btn falseBtn" style="margin-right:21px;float: right;margin-top: -43px;" />
+            <div style="padding:20px">
+                <div class="txtbox floatL edit_input">
+                    <label class="sttl" style="color: #555;font-size: 15px;">讨论组名称：</label>
+                    <input type="text" id="DiscussionGroupName" class="textarea1" />
+                    <input type="button" id="Create" value="创建" class="input_btn trueBtn" />
+                </div>
+            </div>
+            <div id="allFriendList" style="height:250px;overflow:auto">
+            </div>
+        </div>
+    </section>
+
+    
+
     <div id="zone_left" onselectstart="return false;" style="height: 900px; display: block;">
-        <div style="height:150px;margin-left:10px;">
+        <div style="height:140px;margin-left:10px;">
             <img style="float:left;" src="../images/logo.png"><div style="float:left;color:orange; font-size:30px;font-weight:900;margin-left:15px;margin-top:40px;">WebChat</div>
-            <div style="clear:both;color:#bbb;text-align:center;">遇到啥问题就问吧，不只开发</div>
+            <div style="clear:both;color:#bbb;text-align:center;"><em>Let's chat on WebChat</em></div>
         </div>
         <div style="height:75px;">
             <div class="input-group">
-                <span class="input-group-addon" style="color:orange;">你的昵称</span>
+                <span class="input-group-addon" style="color:orange;">昵称:</span>
                 <input readonly="readonly" id="myname" type="text" class="form-control" maxlength="10">
                 <span id="btn_getnick" class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="show()">
+                    <button class="btn btn-default" type="button" id="createDiscussionGroup">
                         <!--<span style="color:orange;">+</span>-->
-                        <img title="添加好友" src="../images/add.png" style="cursor:pointer;width:18px;height:18px" />
+                        <img title="创建讨论组" src="../images/Chat.png" style="cursor:pointer;width:20px;height:19px" />
+                    </button>
+                </span>
+                <span id="btn_getnick" class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="addFriend">
+                        <!--<span style="color:orange;">+</span>-->
+                        <img title="添加好友" src="../images/add.png" style="cursor:pointer;width:20px;height:19px" />
                     </button>
                 </span>
             </div>
             <div id="user_count" class="list-group-item list-group-item-success" style="cursor:pointer;">
                 <span id="nowusers_count" class="badge" style="background-color:green;">0</span>
-                <span style="margin-right:5px;" class="glyphicon glyphicon-comment"></span>当前在线好友数
-            </div>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-globe"></span>当前在线好友:
+            </div>           
         </div>
         <div id="user_list" class="list-group" style="overflow-y: auto; height: 675px;">
             <a id="public_chat" class="list-group-item" onfocus="this.blur()" onclick="">
                 <span class="badge"></span>
-                <span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-comment"></span>
                 <span class="nickname">公共聊天室<span>
                     </span>
                 </span>
+            </a>
+            <a id="MCfriends" class="list-group-item" onfocus="this.blur()" onclick="">
+                <span class="badge"></span>
+                <span style="margin-right:5px;" class="glyphicon glyphicon-home"></span>
+                <span class="nickname">我的朋友圈<span></span></span><span style="float:right;margin-right: 5px;color:red;" class="glyphicon glyphicon-fire"></span>
             </a>
         </div>
     </div>
@@ -93,13 +166,15 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <span id="msg_title"><span id="chat_with" style="color:orange">何建钦</span></span>
-                    <img id="msg_clear" title="消息清空" style="cursor:pointer;width:25px;float:right;margin-right:15px;" src="../images/msgclear.png">
+                    <img id="msg_clear" title="消息清空" style="cursor:pointer;width:25px;float:right;margin-right:5px;" src="../images/msgclear.png">
+                    <img id="vDGmember" title="查看讨论组成员" src="../images/Chat.png" style="cursor:pointer;width:25px;float:right;margin-right:20px;height: 30px;" />
+                    <img id="addMC" title="发表朋友圈" src="../images/add.png" style="cursor:pointer;width:25px;float:right;margin-right:5px" />
                 </div>
             </div>
             <div id="div_msgbox" class="panel-body" style="overflow-y: auto; height: 656px;">
                 <div class="chatbox" style="float:left">
                     <div style="text-align:left">
-                        <span style="font-weight:900;color:#6d6d6d">忆恋的银杏</span>
+                        <span style="font-weight:900;color:#6d6d6d">何建钦</span>
                         <span style="color:#d2d2d2;">11:04:23</span>
                     </div>
                     <div class="chatarrow" style="left:5px;border-bottom: 8px solid #cfffcf;"></div>
@@ -109,7 +184,7 @@
                 <div class="chatbox" style="float:right">
                     <div style="text-align:right">
                         <span style="color:#d2d2d2;">20:05:33</span>
-                        <span style="font-weight:900;color:#6d6d6d">高兴的西索</span>
+                        <span style="font-weight:900;color:#6d6d6d">王少琨</span>
                     </div>
                     <div class="chatarrow" style="right:5px;border-bottom: 8px solid #ffe6b8;"></div>
                     <div id="7f721f0620_05_33" class="chat selfchat" style="max-width:504px;">
@@ -121,7 +196,7 @@
         </div>
         <div style="position:relative;left:0px;bottom:10px;">
             <div style="float:right;">
-                <button id="btn_say" type="button" class="btn btn-success">发送</button>
+                <button id="btn_say" type="button" class="btn btn-success"><span class="glyphicon glyphicon-send" > 发送</span></button>
             </div>
         </div>
         <div style="clear:both">

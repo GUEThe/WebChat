@@ -13,12 +13,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WebChat</RootNamespace>
     <AssemblyName>WebChat</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,29 +40,34 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LitJson, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LitJson.0.7.0\lib\LitJson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="APP_Data\WebChat.mdf" />
     <Content Include="APP_Data\WebChat_log.ldf">
       <DependentUpon>WebChat.mdf</DependentUpon>
     </Content>
+    <Content Include="css\app.css" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\index.css" />
     <Content Include="css\layer.css" />
@@ -69,13 +76,18 @@
     <Content Include="html\Register.html" />
     <Content Include="html\WebChat.html" />
     <Content Include="images\add.png" />
+    <Content Include="images\Chat.png" />
     <Content Include="images\logo.png" />
     <Content Include="images\msgclear.png" />
+    <Content Include="js\bootstrap.min.js" />
     <Content Include="js\index.js" />
     <Content Include="js\jquery-1.9.1.min.js" />
     <Content Include="js\jquery.form.js" />
     <Content Include="js\jquery1.8.3.min.js" />
     <Content Include="js\jquery1.js" />
+    <Content Include="js\kindeditor\asp.net\bin\LitJSON.dll" />
+    <Content Include="js\kindeditor\asp.net\demo.aspx" />
+    <Content Include="js\kindeditor\asp.net\README.txt" />
     <Content Include="js\kindeditor\kindeditor-all-min.js" />
     <Content Include="js\kindeditor\kindeditor-all.js" />
     <Content Include="js\kindeditor\lang\ar.js" />
@@ -278,7 +290,9 @@
     <Content Include="js\kindeditor\themes\simple\simple.css" />
     <Content Include="js\Particleground.js" />
     <Content Include="html\Login.html" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ashx\login.ashx.cs">
@@ -292,6 +306,14 @@
   <ItemGroup>
     <Content Include="ashx\login.ashx" />
     <Content Include="ashx\register.ashx" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="js\kindeditor\asp.net\file_manager_json.ashx" />
+    <Content Include="js\kindeditor\asp.net\upload_json.ashx" />
+    <Content Include="ashx\upload_json.ashx" />
+    <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\WebChat.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -299,12 +321,14 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{34c144fa-4090-4bbe-b43d-8aaac56f30f5}</Project>
       <Name>DAL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="upload_images\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

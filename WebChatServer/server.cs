@@ -24,7 +24,6 @@ namespace WebChatServer
             //var allSockets = new List<IWebSocketConnection>();
             Dictionary<IWebSocketConnection, string> allOnlineUser = new Dictionary<IWebSocketConnection, string>();
 
-            string[] mgs;
 
             server.Start(socket =>
                 {
@@ -34,8 +33,17 @@ namespace WebChatServer
                         };
                     socket.OnClose = () =>
                         {
+                            string username="";
+                            foreach (KeyValuePair<IWebSocketConnection, String> kv in allOnlineUser)
+                            {
+                                if (kv.Key == socket)
+                                {
+                                    username = kv.Value;
+                                }
+                            }
+                            Console.WriteLine("{0} sign out", username);
                             allOnlineUser.Remove(socket);
-                            Servers.updateuserlist(allOnlineUser);
+                            Servers.updateUserList(allOnlineUser);
 
                             //关闭链接
                         };
@@ -46,11 +54,11 @@ namespace WebChatServer
                             {
                                 case "login":
                                     allOnlineUser.Add(socket, mge.username);
-                                    Servers.updateuserlist(allOnlineUser);
+                                    Servers.updateUserList(allOnlineUser);
                                     Console.WriteLine("{0} login", mge.username);
                                     break;
                                 case "talk":
-                                    Servers.SendSingleMsg(allOnlineUser, mge);
+                                    Servers.sendMsgToMyFriend(allOnlineUser, mge);
                                     break;
                                 case "talkToAll":
                                     Servers.sendMessageToAllUser(allOnlineUser, mge);
@@ -60,11 +68,43 @@ namespace WebChatServer
                                     break;
                                 case "addFriend":
                                     Servers.addFriend(allOnlineUser, mge);
-                                    Servers.updateuserlist(allOnlineUser);
+                                    Servers.updateUserList(allOnlineUser);
                                     break;
                                 case "getChatlog":
                                     Servers.getChatLog(allOnlineUser, mge);
                                     break;
+                                //case "getAllMyFriend":
+                                //    Servers.getAllMyFriend(allOnlineUser, mge);
+                                //    break;
+                                case "createDiscussionGroup":
+                                    Servers.createDiscussionGroup(allOnlineUser, mge);
+                                    Servers.updateUserList(allOnlineUser);
+                                    break;
+                                case "talkToDG":
+                                    Servers.sendMsgToMyDG(allOnlineUser, mge);
+                                    break;
+                                case "delChatlog":
+                                    Servers.delChatLog(allOnlineUser, mge);
+                                    break;
+                                case "getDGmember":
+                                    Servers.getDGmember(allOnlineUser, mge);
+                                    break;
+                                case "getMYmc":
+                                    Servers.getMYmc(allOnlineUser, mge);
+                                    break;
+                                case "publishMYmc":
+                                    Servers.insertMYmc(mge);
+                                    break;
+                                case"publishComment":
+                                    Servers.publishComment(allOnlineUser, mge);
+                                    break;
+                                case "support":
+                                    Servers.support(allOnlineUser, mge);
+                                    break;
+                                case "disSupport":
+                                    Servers.disSupport(allOnlineUser, mge);
+                                    break;
+
                             }
                             //switch (mgs[0])
                             //{
